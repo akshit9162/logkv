@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: release
+            cmake_args: -DCMAKE_BUILD_TYPE=Release
+          - name: asan+ubsan
+            cmake_args: -DCMAKE_BUILD_TYPE=Debug -DLOGKV_SANITIZE=ON
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build ${{ matrix.cmake_args }}
+
+      - name: Build
+        run: cmake --build build -j$(nproc)
+
+      - name: Unit tests
+        run: ./build/test_store
+
+      - name: Crash test (SIGKILL mid-append)
+        if: matrix.name == 'release'
+        run: ./tools/crashtest.sh 15 build
+
+      - name: Benchmark (smoke)
+        if: matrix.name == 'release'
+        run: ./build/bench 2000 128 128
