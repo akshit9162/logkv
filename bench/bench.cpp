@@ -3,9 +3,11 @@
 // it makes the cost of durability a number instead of an opinion.
 
 #include <chrono>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <functional>
 #include <random>
 #include <string>
 #include <vector>

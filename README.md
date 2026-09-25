@@ -1,5 +1,7 @@
 # logkv
 
+**[→ Visual walkthrough and results](https://akshit9162.github.io/logkv/)**
+
 A crash-safe, append-only key–value store in C++20, built to make one question
 answerable with a number rather than an opinion: **what does durability
 actually cost, and what exactly is guaranteed when a write returns?**
